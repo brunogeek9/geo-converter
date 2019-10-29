@@ -11,7 +11,9 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
+    "bluebird": "^3.7.1",
     "mongoose": "5.7.1",
-    "mongoose-double": "0.0.1"
+    "mongoose-double": "0.0.1",
+    "mongoose-geojson-schema": "^2.1.3"
   }
 }

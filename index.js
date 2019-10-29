@@ -1,4 +1,6 @@
-const mongo = require('mongoose');
+var Promise = require('bluebird');
+const mongo = Promise.promisifyAll(require('mongoose'));
+
 var mydata;
 mongo.connect(
     'mongodb://localhost:27017/geoconv',
@@ -11,7 +13,7 @@ db.once('open', function () {
     console.log('conectado');
 });
 async function consoleAsync(data) {
-    mydata = data;
+    // mydata = data;
     // await console.log(data);
 } 
 var restaurantSchema = new mongo.Schema({
@@ -30,15 +32,32 @@ var restaurantSchema = new mongo.Schema({
         date: Date
     }],
     name: String,
-    restaurant_id: Number
+    restaurant_id: Number,
+    coordinates: {type: "Point}
  
 });
 
 var Model = mongo.model('restaurants', restaurantSchema);
-
-Model.findOne({}, function (err, data) {
-    if (err) return console.error(err);
-    consoleAsync(data);
+var finalResults = [];
+// var query = Model.findOne({}
+    // , function (err, data) {
+    // if (err) return console.error(err);
+    // // consoleAsync(data);
+// );
+var promises = Model.find({}, function(err, results) {
+    results.forEach(function(element) {
+        finalResults.push(element);
+    });
 });
 
-console.log(mydata);
+Promise.all(promises).then(function() {
+    console.log(finalResults.length);
+}).error(console.error);
+
+console.log(finalResults[0]);
+// var promise = query.exec();
+// promise.addBack(function (err, docs) {
+//     mydata = docs;
+// });
+// console.log(mydata);
+// await Model.updateMany({}, { $set: { name: 'foo' } });
