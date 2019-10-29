@@ -19,6 +19,8 @@ async function consoleAsync(data) {
 var restaurantSchema = new mongo.Schema({
     address: {
         street: String,
+        building: Number,
+        coord: []
     },
     borough: String,
     cuisine: String,
@@ -50,9 +52,9 @@ var Model = mongo.model('restaurants', restaurantSchema);
 //     console.log(finalResults[0].address.building);
 // }).error(console.error);
 
-Model.findOne({}, function (err, data) {
-    consoleAsync(data.address);
-})
+// Model.findOne({}, function (err, data) {
+//     consoleAsync(data);
+// })
 
 // console.log(finalResults[0]);
 // var promise = query.exec();
