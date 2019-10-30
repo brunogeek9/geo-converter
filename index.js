@@ -2,11 +2,9 @@ var Promise = require('bluebird');
 var GeoJSON = require('mongoose-geojson-schema');
 const mongo = Promise.promisifyAll(require('mongoose'));
 
-var mydata;
 mongo.connect(
     'mongodb://localhost:27017/geoconv',
     { useNewUrlParser: true }
-
 );
 var db = mongo.connection;
 db.on('error', console.error.bind(console, 'connection error:'));
@@ -30,36 +28,30 @@ var restaurantSchema = new mongo.Schema({
     }],
     name: String,
     restaurant_id: Number,
-    point: mongo.Schema.Types.Point,
+    point: { type: 'Point' },
 });
 
 var Model = mongo.model('restaurants', restaurantSchema);
-// var finalResults = [];
+var finalResults = [];
 
-// var promises = Model.find({}, function (err, results) {
-//     results.forEach(function (element) {
-//         finalResults.push(element);
-//     });
-// });
+var promises = Model.find({}, function (err, results) {
+    results.forEach(function (element) {
+        finalResults.push(element);
+    });
+});
 
-// Promise.all(promises).then(function () {
-//     // Model.updateMany({}, { $set: { point: finalResults.address.coord } });
-//     var tam = finalResults.length;
-//     console.log(finalResults[0]);
-//     for (let index = 0; index < tam; index++) {
-//         Model.update({}, { $set: { point: finalResults[index].address.coord } });
-//     }
-//     console.log(finalResults[0].address.building);
-// }).error(console.error);
-
-// Model.findOne({}, function (err, data) {
-//     consoleAsync(data);
-// })
-
-// console.log(finalResults[0]);
-// var promise = query.exec();
-// promise.addBack(function (err, docs) {
-//     mydata = docs;
-// });
-// console.log(mydata);
-// await Model.updateMany({}, { $set: { point: [] } });
+Promise.all(promises).then(function () {
+    var tam = finalResults.length;
+    console.log(finalResults[0].address.coord);
+    
+    for (let index = 0; index < tam; index++) {
+    finalResults[0].update(
+        { point: finalResults[0].address.coord },
+        { multi: true },
+        function (err, numberAffected) {
+            // consoleAsync(numberAffected);
+        });
+    }
+    
+    console.log(finalResults[0].address.coord);
+}).error(console.error);
