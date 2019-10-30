@@ -28,7 +28,10 @@ var restaurantSchema = new mongo.Schema({
     }],
     name: String,
     restaurant_id: Number,
-    point: { type: 'Point' },
+    point: {
+        type: String, // Don't do `{ location: { type: String } }`
+        enum: ['Point']
+    }
 });
 
 var Model = mongo.model('restaurants', restaurantSchema);
@@ -43,15 +46,15 @@ var promises = Model.find({}, function (err, results) {
 Promise.all(promises).then(function () {
     var tam = finalResults.length;
     console.log(finalResults[0].address.coord);
-    
+
     for (let index = 0; index < tam; index++) {
-    finalResults[0].update(
-        { point: finalResults[0].address.coord },
-        { multi: true },
-        function (err, numberAffected) {
-            // consoleAsync(numberAffected);
-        });
+        finalResults[index].update(
+            { point: finalResults[index].address.coord },
+            { multi: true },
+            function (err, numberAffected) {
+                // consoleAsync(numberAffected);
+            });
     }
-    
+
     console.log(finalResults[0].address.coord);
 }).error(console.error);
