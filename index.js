@@ -28,9 +28,16 @@ var restaurantSchema = new mongo.Schema({
     }],
     name: String,
     restaurant_id: Number,
-    point: {
-        type: String, // Don't do `{ location: { type: String } }`
-        enum: ['Point']
+    location: {
+        type: {
+            type: String, // Don't do `{ location: { type: String } }`
+            enum: ['Point'], // 'location.type' must be 'Point'
+            required: true
+        },
+        coordinates: {
+            type: [Number],
+            required: true
+        }
     }
 });
 
@@ -48,13 +55,14 @@ Promise.all(promises).then(function () {
     console.log(finalResults[0].address.coord);
 
     for (let index = 0; index < tam; index++) {
+        var local = finalResults[index].address.coord;
         finalResults[index].update(
-            { point: finalResults[index].address.coord },
+            {
+                location: local
+            },
             { multi: true },
             function (err, numberAffected) {
-                // consoleAsync(numberAffected);
             });
     }
 
-    console.log(finalResults[0].address.coord);
 }).error(console.error);
