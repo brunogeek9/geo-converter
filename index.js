@@ -53,7 +53,8 @@ Model.find({
         }
     }
 }, function (err, d) {
-    console.log(data.length)
+    //como são muitos dados, apenas printei a quantidade de restaurantes
+    console.log(d.length)
     if (err) return console.error(err);
 
 });
