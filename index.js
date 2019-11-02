@@ -1,9 +1,10 @@
 var Promise = require('bluebird');
-var GeoJSON = require('mongoose-geojson-schema');
+// var GeoJSON = require('mongoose-geojson-schema');
 const mongo = Promise.promisifyAll(require('mongoose'));
-
+const PORT = 27017;
+const DB_NAME = 'geoconv';
 mongo.connect(
-    'mongodb://localhost:27017/geoconv',
+    `mongodb://localhost:${PORT}/${DB_NAME}`,
     { useNewUrlParser: true }
 );
 var db = mongo.connection;
