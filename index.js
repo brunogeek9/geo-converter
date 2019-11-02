@@ -15,16 +15,19 @@ db.once('open', function () {
 async function consoleAsync(data) {
     await console.log(data);
 }
+//importando o model
 require('./model');
 var Model = mongo.model('restaurants');
-var finalResults = [];
 
+//guardando os restaurantes da collection em um array
+var finalResults = [];
 var promises = Model.find({}, function (err, results) {
     results.forEach(function (element) {
         finalResults.push(element);
     });
 });
 
+//percorrendo o array da collection para converter os campos para padrão GeoJSON
 Promise.all(promises).then(function () {
     var tam = finalResults.length;
 
@@ -40,9 +43,9 @@ Promise.all(promises).then(function () {
     }
     console.log(local);
 }).error(console.error);
-//latitude 40.7570 Longitude: -73.9903.
-//Criando o indice 2dsphere db.restaurants.createIndex( { location : "2dsphere" } )
-//buscando os dados 
+//Port Authority Bus Terminal (NY) latitude 40.7570 Longitude: -73.9903.
+
+//buscando os restaurantes distantes até 1 quilômetro do Port Authority Bus Terminal (NY)
 Model.find({
     location:
     {
@@ -54,7 +57,7 @@ Model.find({
         }
     }
 }, function (err, d) {
-    //como são muitos dados, apenas printei a quantidade de restaurantes
+    //como são muitos dados, apenas imprimi no console a quantidade de restaurantes
     console.log(d.length)
     if (err) return console.error(err);
 

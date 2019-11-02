@@ -31,7 +31,7 @@ npm start
 
 ### Command to fetch restaurant data 1km from Port Authority Bus Terminal (NY)
 ```
-db.restaurants.find(find({
+db.restaurants.find({
     location:
     {
         $near:
