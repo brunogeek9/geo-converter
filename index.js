@@ -14,34 +14,8 @@ db.once('open', function () {
 async function consoleAsync(data) {
     await console.log(data);
 }
-var restaurantSchema = new mongo.Schema({
-    address: {
-        street: String,
-        building: Number,
-        coord: []
-    },
-    borough: String,
-    cuisine: String,
-    grades: [{
-        grade: String,
-        date: Date
-    }],
-    name: String,
-    restaurant_id: Number,
-    location: {
-        type: {
-            type: String, // Don't do `{ location: { type: String } }`
-            enum: ['Point'], // 'location.type' must be 'Point'
-            required: true
-        },
-        coordinates: {
-            type: [Number],
-            required: true
-        }
-    }
-});
-
-var Model = mongo.model('restaurants', restaurantSchema);
+require('./model');
+var Model = mongo.model('restaurants');
 var finalResults = [];
 
 var promises = Model.find({}, function (err, results) {
@@ -52,11 +26,10 @@ var promises = Model.find({}, function (err, results) {
 
 Promise.all(promises).then(function () {
     var tam = finalResults.length;
-    console.log(finalResults[0].address.coord);
 
     for (let index = 0; index < tam; index++) {
         var local = finalResults[index].address.coord;
-        finalResults[index].update(
+        finalResults[index].updateOne(
             {
                 location: local
             },
@@ -64,5 +37,24 @@ Promise.all(promises).then(function () {
             function (err, numberAffected) {
             });
     }
-
+    console.log(local);
 }).error(console.error);
+//latitude 40.7570 Longitude: -73.9903.
+//Criando o indice 2dsphere db.restaurants.createIndex( { location : "2dsphere" } )
+//buscando os dados 
+Model.find({
+    location:
+    {
+        $near:
+        {
+            $geometry:
+                { type: "Point", coordinates: [-73.9903, 40.7570] },
+            $minDistance: 0, $maxDistance: 1000
+        }
+    }
+}, function (err, d) {
+    console.log(data.length)
+    if (err) return console.error(err);
+
+});
+
