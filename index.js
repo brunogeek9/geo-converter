@@ -3,6 +3,9 @@ var Promise = require('bluebird');
 const mongo = Promise.promisifyAll(require('mongoose'));
 const PORT = 27017;
 const DB_NAME = 'geoconv';
+let labels = new Map();
+labels.set('t1', 'tempo inserção ');
+labels.set('t2', 'tempo de busca ');
 mongo.connect(
     `mongodb://localhost:${PORT}/${DB_NAME}`,
     { useNewUrlParser: true }
@@ -46,6 +49,7 @@ Promise.all(promises).then(function () {
 //Port Authority Bus Terminal (NY) latitude 40.7570 Longitude: -73.9903.
 
 //buscando os restaurantes distantes até 1 quilômetro do Port Authority Bus Terminal (NY)
+console.time(labels.get('t1'))
 Model.find({
     location:
     {
@@ -57,9 +61,9 @@ Model.find({
         }
     }
 }, function (err, d) {
-    //como são muitos dados, apenas imprimi no console a quantidade de restaurantes
     console.log(d.length)
     if (err) return console.error(err);
+    console.time(labels.get('t2'));
 
 });
 
