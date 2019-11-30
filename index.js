@@ -1,5 +1,5 @@
 var Promise = require('bluebird');
-const OP = 2;
+const OP = 3;
 // var GeoJSON = require('mongoose-geojson-schema');
 const mongo = Promise.promisifyAll(require('mongoose'));
 const PORT = 27017;

@@ -1,9 +1,5 @@
 # geo-converter
 
-## project setup
-```
-npm install
-```
 ## running mongo in docker
 ```
 docker run -p 27017:27017 --name nosql-mongo -v /home/USER/development/mongo:/data/ -d mongo
@@ -12,34 +8,22 @@ docker run -p 27017:27017 --name nosql-mongo -v /home/USER/development/mongo:/da
 ```
 git clone https://github.com/gustavoleitao/mongo-dataset.git
 ```
-## importing the dataset to your mongodb
+## after downloading copy the file to mongo volume folder and import the dataset to your mongodb
 ```
 mongoimport --db geoconv --collection restaurants --drop --file /data/primer-dataset.json
 ```
-
-## running the project
-```
-npm start
-```
-
-## after configurations
-
-### Command to create 2dsphere
+## command to create 2dsphere
 ```
  db.restaurants.createIndex( { location : "2dsphere" } )
 ```
+### Import Dataset Demonstration
+![](demo.gif)
 
-### Command to fetch restaurant data 1km from Port Authority Bus Terminal (NY)
+## project setup
 ```
-db.restaurants.find({
-    location:
-    {
-        $near:
-        {
-            $geometry:
-                { type: "Point", coordinates: [-73.9903, 40.7570] },
-            $minDistance: 0, $maxDistance: 1000
-        }
-    }
-})
+npm install
+```
+## running the project
+```
+npm start
 ```
